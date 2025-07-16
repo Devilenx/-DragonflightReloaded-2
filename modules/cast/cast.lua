@@ -188,12 +188,12 @@ DFRL:NewMod("Cast", 1, function()
         f:RegisterEvent("SPELLCAST_CHANNEL_START")
         f:RegisterEvent("SPELLCAST_CHANNEL_UPDATE")
 
-        f:SetScript("OnEvent", function()
-            Setup:HandleEvent(event, arg1, arg2)
+        f:SetScript("OnEvent", function(self, event, ...)
+            Setup:HandleEvent(event, ...)
         end)
 
-        f:SetScript("OnUpdate", function()
-            Setup:OnUpdate(arg1)
+        f:SetScript("OnUpdate", function(self, elapsed)
+            Setup:OnUpdate(elapsed)
             if Setup.state.casting or Setup.state.channeling or Setup.state.fadeOut or Setup.state.flash then
                 DFRL.activeScripts["CastbarScript"] = true
             else

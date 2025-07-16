@@ -155,9 +155,9 @@ function DFRL:RunMods()
 
     table.sort(list, function(a, b) return a.priority < b.priority end)
 
-    debugprint("RunMods - Executing " .. table.getn(list) .. " modules...")
+    debugprint("RunMods - Executing " .. #list .. " modules...")
 
-    for i = 1, table.getn(list) do
+    for i = 1, #list do
         local name = list[i].name
         local func = list[i].func
 		local enabled = self.tempDB[name] and self.tempDB[name].enabled
@@ -421,8 +421,11 @@ end
 -- EVENT HANDLER
 --=================
 DFRL:RegisterEvent("ADDON_LOADED")
+DFRL:RegisterEvent("PLAYER_LOGIN")
+DFRL:RegisterEvent("PLAYER_ENTERING_WORLD")
 DFRL:RegisterEvent("PLAYER_LOGOUT")
-DFRL:SetScript("OnEvent", function()
+DFRL:SetScript("OnEvent", function(self, event, ...)
+    local arg1 = ...
 
     -- check on every addon load
     if event == "ADDON_LOADED" then
@@ -439,10 +442,23 @@ DFRL:SetScript("OnEvent", function()
         end
 
         DFRL:InitTempDB()
+        -- Mark as booted but wait for PLAYER_LOGIN to run modules
+        boot = true
+    end
+
+    -- Complete initialization after player login
+    if event == "PLAYER_LOGIN" and boot then
+        debugprint("EVENT: PLAYER_LOGIN")
         DFRL:RunMods()
 
         print("Welcome to |cffffd200Dragonflight:|r Reloaded.")
         print("Open menu via |cffddddddESC|r or |cffddddddSLASH DFRL|r.")
+    end
+
+    -- Additional initialization check for entering world
+    if event == "PLAYER_ENTERING_WORLD" and boot then
+        debugprint("EVENT: PLAYER_ENTERING_WORLD")
+        -- Ensure any frame positioning is handled after entering world
     end
 
     -- save tempDB to globalDB on logout

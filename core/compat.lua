@@ -162,11 +162,11 @@ function Setup:ApplyShagu()
         debugprint("ApplyShagu - Config not ready, waiting for GUI flags...")
         local waitFrame = CreateFrame("Frame")
         waitFrame.elapsed = 0
-        waitFrame:SetScript("OnUpdate", function()
-            this.elapsed = this.elapsed + arg1
-            if ShaguTweaks_config or this.elapsed > 2 then
+        waitFrame:SetScript("OnUpdate", function(self, elapsed)
+            self.elapsed = self.elapsed + elapsed
+            if ShaguTweaks_config or self.elapsed > 2 then
                 debugprint("ApplyShagu - Config ready or timeout for GUI")
-                this:SetScript("OnUpdate", nil)
+                self:SetScript("OnUpdate", nil)
                 if ShaguTweaks_config then
                     if not DFRL.gui.shaguCore then
                         DFRL.gui.shaguCoreData = Setup:ShaguMetaData().core
@@ -226,7 +226,8 @@ function Setup:Init()
 
     local f = CreateFrame("Frame")
     f:RegisterEvent("ADDON_LOADED")
-    f:SetScript("OnEvent", function()
+    f:SetScript("OnEvent", function(self, event, ...)
+        local arg1 = ...
         if event == "ADDON_LOADED" and self.addons[arg1] then
             debugprint("Init: ADDON_LOADED event for " .. arg1)
             self:HandleAddon(arg1)

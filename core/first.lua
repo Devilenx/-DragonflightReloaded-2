@@ -98,8 +98,8 @@ function Setup:WelcomePage()
     menuBtn:SetScript("OnClick", function()
         UIFrameFadeOut(self.welcomeFrame, self.welcomeConfig.fadeTime, 1, 0)
         local hideTimer = 0
-        self.welcomeFrame:SetScript("OnUpdate", function()
-            hideTimer = hideTimer + arg1
+        self.welcomeFrame:SetScript("OnUpdate", function(frame, elapsed)
+            hideTimer = hideTimer + elapsed
             if hideTimer >= self.welcomeConfig.fadeTime then
                 self.welcomeFrame:Hide()
                 self.welcomeFrame:SetScript("OnUpdate", nil)
@@ -113,8 +113,8 @@ function Setup:WelcomePage()
     okBtn:SetScript("OnClick", function()
         UIFrameFadeOut(self.welcomeFrame, self.welcomeConfig.fadeTime, 1, 0)
         local hideTimer = 0
-        self.welcomeFrame:SetScript("OnUpdate", function()
-            hideTimer = hideTimer + arg1
+        self.welcomeFrame:SetScript("OnUpdate", function(frame, elapsed)
+            hideTimer = hideTimer + elapsed
             if hideTimer >= self.welcomeConfig.fadeTime then
                 self.welcomeFrame:Hide()
                 self.welcomeFrame:SetScript("OnUpdate", nil)
@@ -134,8 +134,8 @@ function Setup:WelcomePage()
     timerBar:SetHeight(barHeight)
 
     local elapsed = 0
-    self.welcomeFrame:SetScript("OnUpdate", function()
-        elapsed = elapsed + arg1
+    self.welcomeFrame:SetScript("OnUpdate", function(frame, elapsedTime)
+        elapsed = elapsed + elapsedTime
         if elapsed >= self.welcomeConfig.timerDuration then
             okBtn:Enable()
             menuBtn:Enable()
@@ -191,8 +191,8 @@ function Setup:PatchWarning()
     timerBar:SetHeight(barHeight)
 
     local elapsed = 0
-    patchFrame:SetScript("OnUpdate", function()
-        elapsed = elapsed + arg1
+    patchFrame:SetScript("OnUpdate", function(frame, elapsedTime)
+        elapsed = elapsed + elapsedTime
         if elapsed >= self.patchConfig.timerDuration then
             okBtn:Enable()
             timerBar:Hide()
@@ -212,15 +212,17 @@ DFRL.activeScripts["PatchWarningScript"] = false
 -- INIT
 --=================
 local f = CreateFrame("Frame")
-f:RegisterEvent("VARIABLES_LOADED")
-f:SetScript("OnEvent", function()
-    local char = UnitName("player")
-    if not DFRL_CUR_PROFILE[char .. "_firstRun"] then
-        Setup:WelcomePage()
-    end
+f:RegisterEvent("PLAYER_LOGIN")
+f:SetScript("OnEvent", function(self, event)
+    if event == "PLAYER_LOGIN" then
+        local char = UnitName("player")
+        if not DFRL_CUR_PROFILE[char .. "_firstRun"] then
+            Setup:WelcomePage()
+        end
 
-    local seenVersion = DFRL:GetTempValue("Generic", "patchWarnVersion")
-    if seenVersion ~= Setup.patchConfig.version then
-        -- Setup:PatchWarning()
+        local seenVersion = DFRL:GetTempValue("Generic", "patchWarnVersion")
+        if seenVersion ~= Setup.patchConfig.version then
+            -- Setup:PatchWarning()
+        end
     end
 end)
