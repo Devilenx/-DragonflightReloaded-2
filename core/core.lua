@@ -80,24 +80,14 @@ function DFRL:GetInfoOrCons(type)
 end
 
 function DFRL:CheckAddon(name)
-    if name == "ShaguTweaks" then
-        self.addon1 = true
-        debugprint("CheckAddon - Detected: " .. name)
-    elseif name == "ShaguTweaks-extras" then
-        self.addon2 = true
-        debugprint("CheckAddon - Detected: " .. name)
-    elseif name == "Bagshui" then
+    -- Legacy addon compatibility removed for 3.3.5
+    -- Only check for Bagshui which may still be relevant
+    if name == "Bagshui" then
         self.addon3 = true
         debugprint("CheckAddon - Detected: " .. name)
     end
 
-    if IsAddOnLoaded("ShaguTweaks") then
-        self.addon1 = true
-        debugprint("CheckAddon - Already loaded: ShaguTweaks")
-    elseif IsAddOnLoaded("ShaguTweaks-extras") then
-        self.addon2 = true
-        debugprint("CheckAddon - Already loaded: ShaguTweaks-extras")
-    elseif IsAddOnLoaded("Bagshui") then
+    if IsAddOnLoaded("Bagshui") then
         self.addon3 = true
         debugprint("CheckAddon - Already loaded: Bagshui")
     end

@@ -300,9 +300,9 @@ DFRL:NewMod("Micro", 1, function()
         self.latencyTexture = self.latencyIndicator:CreateTexture(nil, "ARTWORK")
         self.latencyTexture:SetAllPoints(self.latencyIndicator)
 
-        self.netStatsFrame:SetScript("OnUpdate", function()
-            if (this.tick or 0) > GetTime() then return end
-            this.tick = GetTime() + 0.5
+        self.netStatsFrame:SetScript("OnUpdate", function(self, elapsed)
+            if (self.tick or 0) > GetTime() then return end
+            self.tick = GetTime() + 0.5
 
             local bandwidthIn, bandwidthOut, latencyHome = GetNetStats()
             self.msText:SetText(string.format("MS: %d", latencyHome))
@@ -310,9 +310,9 @@ DFRL:NewMod("Micro", 1, function()
             self.fpsText:SetText(string.format("FPS: %d", GetFramerate()))
         end)
 
-        self.latencyIndicator:SetScript("OnUpdate", function()
-            if (this.tick or 0) > GetTime() then return end
-            this.tick = GetTime() + 2
+        self.latencyIndicator:SetScript("OnUpdate", function(self, elapsed)
+            if (self.tick or 0) > GetTime() then return end
+            self.tick = GetTime() + 2
 
             local _, _, latencyHome = GetNetStats()
             if latencyHome < 100 then
@@ -328,9 +328,9 @@ DFRL:NewMod("Micro", 1, function()
 
         hooksecurefunc("ToggleFramerate", function()
             local checkTimer = CreateFrame("Frame")
-            checkTimer:SetScript("OnUpdate", function()
-                if (this.tick or 0) > GetTime() then return end
-                this.tick = GetTime() + 0.1
+            checkTimer:SetScript("OnUpdate", function(self, elapsed)
+                if (self.tick or 0) > GetTime() then return end
+                self.tick = GetTime() + 0.1
 
                 if FramerateLabel and FramerateLabel:IsVisible() then
                     self.netStatsFrame:Show()

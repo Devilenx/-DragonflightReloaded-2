@@ -79,18 +79,17 @@ DFRL:NewMod("Gui-base", 2, function()
             [2] = "Info",
             [3] = "Profiles",
             [4] = "Modules",
-            [5] = "ShaguTweaks",
 
-            [6] = "Actionbars",
-            [7] = "Bags",
-            [8] = "Castbar",
-            [9] = "Chat",
-            [10] = "Interface",
-            [11] = "Micromenu",
-            [12] = "Minimap",
-            [13] = "Third Party",
-            [14] = "Unitframes",
-            [15] = "Xprep",
+            [5] = "Actionbars",
+            [6] = "Bags",
+            [7] = "Castbar",
+            [8] = "Chat",
+            [9] = "Interface",
+            [10] = "Micromenu",
+            [11] = "Minimap",
+            [12] = "Third Party",
+            [13] = "Unitframes",
+            [14] = "Xprep",
         }
     }
 
@@ -495,37 +494,7 @@ DFRL:NewMod("Gui-base", 2, function()
         end
     end
 
-    function Setup:UpdateShaguTweaksButton()
-        for i = 1, #Setup.tabs do
-            if Setup.tabs[i] == "ShaguTweaks" and self.tabButtons[i] then
-                local tab = self.tabButtons[i]
-                local text = tab:GetFontString()
-                if DFRL.addon1 then
-                    debugprint("UpdateShaguTweaksButton - ShaguTweaks enabled - addon found")
-                    text:SetTextColor(.7, .7, .7, 1)
-                    tab:Enable()
-                    tab:SetScript("OnClick", function()
-                        self:SelectTab(i)
-                    end)
-                    tab:SetScript("OnEnter", function()
-                        if i ~= self.selectedTab then
-                            tab.highlight:Show()
-                        end
-                    end)
-                    tab:SetScript("OnLeave", function()
-                        if i ~= self.selectedTab then
-                            tab.highlight:Hide()
-                        end
-                    end)
-                else
-                    debugprint("UpdateShaguTweaksButton - ShaguTweaks still disabled - addon not found")
-                    text:SetTextColor(.2, .2, .2, 1)
-                    tab:Disable()
-                end
-                break
-            end
-        end
-    end
+    -- Legacy ShaguTweaks function removed for 3.3.5 compatibility
 
     --=================
     -- INIT
@@ -585,7 +554,7 @@ DFRL:NewMod("Gui-base", 2, function()
         self.eventFrame:RegisterEvent("PLAYER_LOGIN")
         self.eventFrame:SetScript("OnEvent", function(frame, event)
             if event == "PLAYER_LOGIN" then
-                Setup:UpdateShaguTweaksButton()
+                -- Legacy ShaguTweaks button update removed
                 self.eventFrame:UnregisterEvent("PLAYER_LOGIN")
             end
         end)

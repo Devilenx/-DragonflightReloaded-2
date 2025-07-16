@@ -55,22 +55,7 @@ DFRL:NewMod("Menu", 1, function()
             return origShowUIPanel(frame, force)
         end
         
-        local frames = {OptionsFrame, SoundOptionsFrame, UIOptionsFrame}
-        for _, frame in ipairs(frames) do
-            if frame then
-                local origOnShow = frame:GetScript("OnShow")
-                frame:SetScript("OnShow", function()
-                    if origOnShow then origOnShow() end
-                    Disable_BagButtons()
-                end)
-                
-                local origOnHide = frame:GetScript("OnHide")
-                frame:SetScript("OnHide", function()
-                    if origOnHide then origOnHide() end
-                    Enable_BagButtons()
-                end)
-            end
-        end
+        -- Legacy option frames handling removed for 3.3.5 - use InterfaceOptionsFrame instead
     end
 
     function Setup:MenuFrame()
@@ -82,12 +67,10 @@ DFRL:NewMod("Menu", 1, function()
             
             self.menuframe:SetScript("OnShow", function()
                 UpdateMicroButtons()
-                Disable_BagButtons()
             end)
             
             self.menuframe:SetScript("OnHide", function()
                 UpdateMicroButtons()
-                Enable_BagButtons()
             end)
 
             local drBtn = DFRL.tools.CreateButton(self.menuframe, "|cFFFFD100Dragonflight:|r Reloaded", self.btnw, self.btnh)
@@ -107,71 +90,48 @@ DFRL:NewMod("Menu", 1, function()
                 end
             end)
 
-            local donationBtn = DFRL.tools.CreateButton(self.menuframe, "|cFFFFD100Donation Rewards", self.btnw, self.btnh)
+            local donationBtn = DFRL.tools.CreateButton(self.menuframe, "|cFFFFD100Donation Info", self.btnw, self.btnh)
             donationBtn:SetPoint("TOP", addonsBtn, "BOTTOM", 0, -self.space)
             donationBtn:SetScript("OnClick", function()
                 self.menuframe:Hide()
-                 ShopFrame_Toggle()
+                -- Removed ShopFrame_Toggle() - not available in 3.3.5
+                print("Donation info: Check addon description for donation details")
             end)
 
             local videoBtn = DFRL.tools.CreateButton(self.menuframe, "Video Options", self.btnw, self.btnh)
             videoBtn:SetPoint("TOP", donationBtn, "BOTTOM", 0, -self.space)
             videoBtn:SetScript("OnClick", function()
                 self.menuframe:Hide()
-                ShowUIPanel(OptionsFrame)
+                InterfaceOptionsFrame_OpenToCategory("Graphics")
             end)
 
             local soundBtn = DFRL.tools.CreateButton(self.menuframe, "Sound Options", self.btnw, self.btnh)
             soundBtn:SetPoint("TOP", videoBtn, "BOTTOM", 0, -self.gap)
             soundBtn:SetScript("OnClick", function()
                 self.menuframe:Hide()
-                ShowUIPanel(SoundOptionsFrame)
+                InterfaceOptionsFrame_OpenToCategory("Sound")
             end)
 
             local uiBtn = DFRL.tools.CreateButton(self.menuframe, "UI Options", self.btnw, self.btnh)
             uiBtn:SetPoint("TOP", soundBtn, "BOTTOM", 0, -self.gap)
             uiBtn:SetScript("OnClick", function()
                 self.menuframe:Hide()
-                ShowUIPanel(UIOptionsFrame)
+                InterfaceOptionsFrame_OpenToCategory("Interface")
             end)
 
             local keyBtn = DFRL.tools.CreateButton(self.menuframe, "Key Bindings", self.btnw, self.btnh)
             keyBtn:SetPoint("TOP", uiBtn, "BOTTOM", 0, -self.space)
             keyBtn:SetScript("OnClick", function()
                 self.menuframe:Hide()
-                KeyBindingFrame_LoadUI()
-                if KeyBindingFrame then
-                    local origOnShow = KeyBindingFrame:GetScript("OnShow")
-                    KeyBindingFrame:SetScript("OnShow", function()
-                        if origOnShow then origOnShow() end
-                        Disable_BagButtons()
-                    end)
-                    local origOnHide = KeyBindingFrame:GetScript("OnHide")
-                    KeyBindingFrame:SetScript("OnHide", function()
-                        if origOnHide then origOnHide() end
-                        Enable_BagButtons()
-                    end)
-                end
-                ShowUIPanel(KeyBindingFrame)
+                InterfaceOptionsFrame_OpenToCategory("Key Bindings")
             end)
 
             local macroBtn = DFRL.tools.CreateButton(self.menuframe, "Macros", self.btnw, self.btnh)
             macroBtn:SetPoint("TOP", keyBtn, "BOTTOM", 0, -self.gap)
             macroBtn:SetScript("OnClick", function()
                 self.menuframe:Hide()
-                ShowMacroFrame()
-                if MacroFrame then
-                    local origOnShow = MacroFrame:GetScript("OnShow")
-                    MacroFrame:SetScript("OnShow", function()
-                        if origOnShow then origOnShow() end
-                        Disable_BagButtons()
-                    end)
-                    local origOnHide = MacroFrame:GetScript("OnHide")
-                    MacroFrame:SetScript("OnHide", function()
-                        if origOnHide then origOnHide() end
-                        Enable_BagButtons()
-                    end)
-                end
+                LoadAddOn("Blizzard_MacroUI")
+                ShowUIPanel(MacroFrame)
             end)
 
             local logBtn = DFRL.tools.CreateButton(self.menuframe, "Logout", self.btnw, self.btnh)

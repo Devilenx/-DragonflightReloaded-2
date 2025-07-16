@@ -25,7 +25,7 @@ DFRL:NewDefaults("Cast", {
     }, nil, "text settings", 7, "Change the font used for the castbar", nil, nil},
     showTime = {true, "checkbox", nil, nil, "text settings", 8, "Show casting time", nil, nil},
     showSpell = {true, "checkbox", nil, nil, "text settings", 9, "Show spell name text", nil, nil},
-    showIcon = {true, "checkbox", nil, nil, "text settings", 10, "Show casting spell icon", "REQUIRES SHAGUTWEAKS", nil},
+    showIcon = {true, "checkbox", nil, nil, "text settings", 10, "Show casting spell icon", nil, nil},
     fontSize = {12, "slider", {5, 25}, nil, "text settings", 11, "Change castbar font size", nil, nil},
     fontY = {-16, "slider", {-20, 20}, nil, "text settings", 12, "Change castbar font Y offset", nil, nil},
 
@@ -498,23 +498,9 @@ DFRL:NewMod("Cast", 1, function()
 
     local UnitCastingInfo, UnitChannelInfo
 
-    local function InitShaguTweaks()
-        if ShaguTweaks and ShaguTweaks.UnitCastingInfo then
-            UnitCastingInfo = ShaguTweaks.UnitCastingInfo
-            UnitChannelInfo = ShaguTweaks.UnitChannelInfo
-            return true
-        end
-        return false
-    end
-
-    local checkFrame = CreateFrame("Frame")
-    checkFrame:RegisterEvent("ADDON_LOADED")
-    checkFrame:SetScript("OnEvent", function()
-        if event == "ADDON_LOADED" and arg1 == "ShaguTweaks" then
-            InitShaguTweaks()
-            checkFrame:UnregisterEvent("ADDON_LOADED")
-        end
-    end)
+    -- 3.3.5 casting API - UnitCastingInfo and UnitChannelInfo are native
+    -- No ShaguTweaks dependency needed
+    debugprint("Cast module using native 3.3.5 casting APIs")
 
     --=================
     -- INIT

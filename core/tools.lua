@@ -580,48 +580,7 @@ function DFRL.tools.CreateCheckbox(parent, name, moduleName, key, noCall)
     return checkbox
 end
 
-function DFRL.tools.CreateShaguCheckbox(parent, name, key)
-    debugprint("CreateShaguCheckbox - checkbox for "..key)
-    local checkbox = CreateFrame("CheckButton", name, parent, "UICheckButtonTemplate")
-    checkbox:SetWidth(20)
-    checkbox:SetHeight(20)
-
-    local label = checkbox:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    label:SetFont(DFRL:GetInfoOrCons("font") .. "BigNoodleTitling.ttf", 14, "OUTLINE")
-    label:SetPoint("LEFT", checkbox, "RIGHT", 5, 0)
-    label:SetText(key)
-    label:SetTextColor(.9,.9,.9)
-    checkbox.label = label
-
-    local initial = (ShaguTweaks_config and ShaguTweaks_config[key] == 1)
-    checkbox:SetChecked(initial)
-    debugprint("Initial state for "..key..": "..tostring(initial))
-
-    checkbox:SetScript("OnClick", function()
-        local checked = checkbox:GetChecked() and true or false
-        debugprint(key.." clicked, checked="..tostring(checked))
-
-        if checked then
-            ShaguTweaks_config[key] = 1
-            debugprint("ShaguTweaks_config["..key.."] = 1")
-            local mod = ShaguTweaks.mods[key]
-            if mod and mod.enable then
-                debugprint("Enabling module "..key)
-                mod:enable()
-            end
-        else
-            ShaguTweaks_config[key] = 0
-            debugprint("ShaguTweaks_config["..key.."] = 0")
-            local mod = ShaguTweaks.mods[key]
-            if mod and mod.disable then
-                debugprint("Disabling module "..key)
-                mod:disable()
-            end
-        end
-    end)
-
-    return checkbox
-end
+-- Legacy ShaguTweaks checkbox function removed for 3.3.5 compatibility
 
 function DFRL.tools.CreateSlider(parent, name, moduleName, key, minVal, maxVal, step, noCall)
     local slider = CreateFrame("Slider", name, parent)

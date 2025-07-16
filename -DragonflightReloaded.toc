@@ -60,4 +60,3 @@ modules\gui\homeb.lua
 modules\gui\info.lua
 modules\gui\prof.lua
 modules\gui\mods.lua
-modules\gui\shag.lua
