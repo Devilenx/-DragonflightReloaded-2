@@ -185,9 +185,9 @@ DFRL:NewMod("Frames", 2, function()
 
             -- overlay visibility
             local controlFrame = CreateFrame("Frame")
-            controlFrame:SetScript("OnUpdate", function()
-                if (this.tick or 0) > GetTime() then return end
-                this.tick = GetTime() + 0.1
+            controlFrame:SetScript("OnUpdate", function(self, elapsed)
+                if (self.tick or 0) > GetTime() then return end
+                self.tick = GetTime() + 0.1
 
                 if IsControlKeyDown() and IsShiftKeyDown() and IsAltKeyDown() then
                     flag = true
@@ -249,7 +249,7 @@ DFRL:NewMod("Frames", 2, function()
         end
 
         -- make frames from list movable
-        for i = 1, table.getn(framesToMakeMovable) do
+        for i = 1, #framesToMakeMovable do
             if framesToMakeMovable[i] then
                 MakeFrameMovable(framesToMakeMovable[i])
             end

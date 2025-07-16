@@ -238,7 +238,7 @@ DFRL:NewMod("Player", 1, function()
         }
 
         local currentFrame = 1
-        local totalFrames = table.getn(texCoords)
+        local totalFrames = #texCoords
         local timeSinceLastUpdate = 0
         local updateInterval = 0.05
 
@@ -617,14 +617,13 @@ DFRL:NewMod("Player", 1, function()
         local pulseDuration = 1 / Setup.combatGlow.fadeSpeed
 
         if value then
-            Setup.combatOverlay:SetScript("OnUpdate", function()
-                if (this.tick or 0) > GetTime() then 
+            Setup.combatOverlay:SetScript("OnUpdate", function(frame, elapsed)
+                if (frame.tick or 0) > GetTime() then 
                     DFRL.activeScripts["CombatGlowScript"] = false
                     return 
                 end
-                this.tick = GetTime() + 0.01
+                frame.tick = GetTime() + 0.01
 
-                local elapsed = arg1
                 if not UnitAffectingCombat("player") then
                     local alpha = Setup.combatOverlayTex:GetAlpha()
                     alpha = alpha - (Setup.combatGlow.fadeSpeed * elapsed * 2)
@@ -678,14 +677,13 @@ DFRL:NewMod("Player", 1, function()
         local pulseDuration = 1 / Setup.restingGlow.fadeSpeed
 
         if value then
-            Setup.restingOverlay:SetScript("OnUpdate", function()
-                if (this.tick or 0) > GetTime() then 
+            Setup.restingOverlay:SetScript("OnUpdate", function(frame, elapsed)
+                if (frame.tick or 0) > GetTime() then 
                     DFRL.activeScripts["RestingGlowScript"] = false
                     return 
                 end
-                this.tick = GetTime() + 0.01
+                frame.tick = GetTime() + 0.01
 
-                local elapsed = arg1
                 if not IsResting() then
                     local alpha = Setup.restingOverlayTex:GetAlpha()
                     alpha = alpha - (Setup.restingGlow.fadeSpeed * elapsed * 2)

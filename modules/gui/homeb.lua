@@ -80,9 +80,9 @@ DFRL:NewMod("GUI-Dragonflight", 4, function()
         local time = 0
         local animFrame = CreateFrame("Frame")
 
-        local script = function()
-            if (this.tick or 0) > GetTime() then return end
-            this.tick = GetTime() + 0.01
+        local script = function(self, elapsed)
+            if (self.tick or 0) > GetTime() then return end
+            self.tick = GetTime() + 0.01
 
             if not started and Home.logoStarted then
                 debugprint("Setup:Animate() - Animation started")

@@ -131,19 +131,19 @@ DFRL:NewMod("Map", 1, function()
             self.timeText:SetTextColor(1, 1, 1, 1)
 
             self.updateTimer = CreateFrame("Frame")
-            self.updateTimer:SetScript("OnUpdate", function()
-                if (this.tick or 0) > GetTime() then
+            self.updateTimer:SetScript("OnUpdate", function(frame)
+                if (frame.tick or 0) > GetTime() then
                     return
                 end
-                this.tick = GetTime() + 5
+                frame.tick = GetTime() + 5
 
                 local localTime = date("%H:%M")
                 self.timeText:SetText(localTime)
                 DFRL.activeScripts["MapTimeScript"] = true
             end)
 
-            self.timeFrame:SetScript("OnEnter", function()
-                GameTooltip:SetOwner(this, "ANCHOR_BOTTOMLEFT")
+            self.timeFrame:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
                 local hour, minute = GetGameTime()
                 local serverTime = format("%d:%02d", hour, minute)
                 GameTooltip:AddLine("Time")

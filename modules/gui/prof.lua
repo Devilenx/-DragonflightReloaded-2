@@ -61,7 +61,7 @@ DFRL:NewMod("Gui-prof", 4, function()
         end
 
         if not self.ui.usageText then
-            self.ui.usageText = DFRL.tools.CreateFont(panel, 14, "Usage:\n\n\n1) new profile: create and switch to a new profile\n\n2) switch: change active profile\n\n3) copy: copies all settings into active profile\n\n4) delete: delete profile and switch back to default\n\n5)reset: reset active profile to the default settings\n\n\ndoes not affect shagutweaks\n\nBUG: DOUBLE CLICK DELETE AFTER NEW PROFILE\n\nBUG: ENTER PROFILE NAME STAYS", {.5, .5, .5}, "LEFT")
+            self.ui.usageText = DFRL.tools.CreateFont(panel, 14, "Usage:\n\n\n1) new profile: create and switch to a new profile\n\n2) switch: change active profile\n\n3) copy: copies all settings into active profile\n\n4) delete: delete profile and switch back to default\n\n5)reset: reset active profile to the default settings\n\n\nBUG: DOUBLE CLICK DELETE AFTER NEW PROFILE\n\nBUG: ENTER PROFILE NAME STAYS", {.5, .5, .5}, "LEFT")
             self.grid:AddElement(5, 4, self.ui.usageText)
         end
         if not self.ui.frame then
@@ -133,8 +133,8 @@ DFRL:NewMod("Gui-prof", 4, function()
                 local switchBtn = DFRL.tools.CreateButton(self.ui.frame, "Switch", 50, 20, true, {0.5, 1, 0.5})
                 switchBtn:SetPoint("TOPLEFT", self.ui.frame, "TOPLEFT", 125, yOffset)
                 switchBtn.profName = profName
-                switchBtn:SetScript("OnClick", function()
-                    local clickedName = this.profName
+                switchBtn:SetScript("OnClick", function(self)
+                    local clickedName = self.profName
                     debugprint("Switch button clicked for profile: " .. clickedName)
                     DFRL:SwitchProfile(clickedName)
                     Setup:Update()
@@ -154,8 +154,8 @@ DFRL:NewMod("Gui-prof", 4, function()
                 local copyBtn = DFRL.tools.CreateButton(self.ui.frame, "Copy", 50, 20, true)
                 copyBtn:SetPoint("TOPLEFT", self.ui.frame, "TOPLEFT", 180, yOffset)
                 copyBtn.profName = profName
-                copyBtn:SetScript("OnClick", function()
-                    local clickedName = this.profName
+                copyBtn:SetScript("OnClick", function(self)
+                    local clickedName = self.profName
                     debugprint("Copy button clicked for profile: " .. clickedName)
                     DFRL:LoadProfile(clickedName)
                     Setup:Update()
@@ -176,8 +176,8 @@ DFRL:NewMod("Gui-prof", 4, function()
                 local delBtn = DFRL.tools.CreateButton(self.ui.frame, "Delete", 50, 20, true, {1, 0.5, 0.5})
                 delBtn:SetPoint("TOPLEFT", self.ui.frame, "TOPLEFT", 235, yOffset)
                 delBtn.profName = profName
-                delBtn:SetScript("OnClick", function()
-                    local clickedName = this.profName
+                delBtn:SetScript("OnClick", function(self)
+                    local clickedName = self.profName
                     debugprint("Delete button clicked for profile: " .. clickedName)
                     DFRL:DeleteProfile(clickedName)
                     DFRL:SwitchProfile("Default")
@@ -211,24 +211,24 @@ DFRL:NewMod("Gui-prof", 4, function()
         self.ui.warnerFrame.totalTime = 3
         self.ui.warnerFrame.direction = -1
         self.ui.warnerFrame.alpha = 1
-        self.ui.warnerFrame:SetScript("OnUpdate", function()
+        self.ui.warnerFrame:SetScript("OnUpdate", function(self, elapsed)
             if not Setup.ui.warner:IsVisible() then
-                this:SetScript("OnUpdate", nil)
+                self:SetScript("OnUpdate", nil)
                 return
             end
-            this.elapsed = this.elapsed + arg1
-            this.alpha = this.alpha + this.direction * arg1 * 2
-            if this.alpha <= 0.3 then
-                this.alpha = 0.3
-                this.direction = 1
-            elseif this.alpha >= 1 then
-                this.alpha = 1
-                this.direction = -1
+            self.elapsed = self.elapsed + elapsed
+            self.alpha = self.alpha + self.direction * elapsed * 2
+            if self.alpha <= 0.3 then
+                self.alpha = 0.3
+                self.direction = 1
+            elseif self.alpha >= 1 then
+                self.alpha = 1
+                self.direction = -1
             end
-            Setup.ui.warner:SetAlpha(this.alpha)
-            if this.totalTime > 0 and this.elapsed >= this.totalTime then
+            Setup.ui.warner:SetAlpha(self.alpha)
+            if self.totalTime > 0 and self.elapsed >= self.totalTime then
                 Setup.ui.warner:Hide()
-                this:SetScript("OnUpdate", nil)
+                self:SetScript("OnUpdate", nil)
             end
         end)
     end

@@ -103,19 +103,19 @@ function HookAddonOrVariable(addon, func)
     local lurker = CreateFrame("Frame", nil)
     lurker.func = func
     lurker:RegisterEvent("ADDON_LOADED")
-    lurker:RegisterEvent("VARIABLES_LOADED")
+    lurker:RegisterEvent("PLAYER_LOGIN")
     lurker:RegisterEvent("PLAYER_ENTERING_WORLD")
-    lurker:SetScript("OnEvent",function()
+    lurker:SetScript("OnEvent",function(self, event)
         -- only run when config is available
-        if event == "ADDON_LOADED" and not this.foundConfig then
+        if event == "ADDON_LOADED" and not self.foundConfig then
             return
-        elseif event == "VARIABLES_LOADED" then
-            this.foundConfig = true
+        elseif event == "PLAYER_LOGIN" then
+            self.foundConfig = true
         end
 
         if IsAddOnLoaded(addon) or _G[addon] then
-            this:func()
-            this:UnregisterAllEvents()
+            self:func()
+            self:UnregisterAllEvents()
         end
     end)
 end
@@ -124,18 +124,18 @@ function HookUnitData(unit, func)
     local lurker = CreateFrame("Frame", nil)
     lurker.func = func
     lurker:RegisterEvent("ADDON_LOADED")
-    lurker:RegisterEvent("VARIABLES_LOADED")
+    lurker:RegisterEvent("PLAYER_LOGIN")
     lurker:RegisterEvent("PLAYER_ENTERING_WORLD")
-    lurker:SetScript("OnEvent", function()
-        if event == "ADDON_LOADED" and not this.foundConfig then
+    lurker:SetScript("OnEvent", function(self, event)
+        if event == "ADDON_LOADED" and not self.foundConfig then
             return
-        elseif event == "VARIABLES_LOADED" then
-            this.foundConfig = true
+        elseif event == "PLAYER_LOGIN" then
+            self.foundConfig = true
         end
 
         if UnitHealth(unit) > 0 then
-            this:func()
-            this:UnregisterAllEvents()
+            self:func()
+            self:UnregisterAllEvents()
         end
     end)
 end
@@ -180,34 +180,34 @@ function DFRL.tools.MoveFrame(f, dirX, dirY, time, dist)
     f.targetMoveX = dist * dirX
     f.targetMoveY = dist * dirY
 
-    f:SetScript("OnUpdate", function()
-        this.elapsed = this.elapsed + arg1
+    f:SetScript("OnUpdate", function(self, elapsed)
+        self.elapsed = self.elapsed + elapsed
 
-        if this.elapsed >= time then
-            local remainingX = this.targetMoveX - this.totalMoveX
-            local remainingY = this.targetMoveY - this.totalMoveY
+        if self.elapsed >= time then
+            local remainingX = self.targetMoveX - self.totalMoveX
+            local remainingY = self.targetMoveY - self.totalMoveY
 
             if math.abs(remainingX) > 0.1 or math.abs(remainingY) > 0.1 then
-                local currentX, currentY = this:GetCenter()
-                this:ClearAllPoints()
-                this:SetPoint("CENTER", UIParent, "BOTTOMLEFT", currentX + remainingX, currentY + remainingY)
+                local currentX, currentY = self:GetCenter()
+                self:ClearAllPoints()
+                self:SetPoint("CENTER", UIParent, "BOTTOMLEFT", currentX + remainingX, currentY + remainingY)
             end
 
-            this:SetScript("OnUpdate", nil)
+            self:SetScript("OnUpdate", nil)
         else
-            local progress = this.elapsed / time
-            local targetX = this.targetMoveX * progress
-            local targetY = this.targetMoveY * progress
+            local progress = self.elapsed / time
+            local targetX = self.targetMoveX * progress
+            local targetY = self.targetMoveY * progress
 
-            local moveX = targetX - this.totalMoveX
-            local moveY = targetY - this.totalMoveY
+            local moveX = targetX - self.totalMoveX
+            local moveY = targetY - self.totalMoveY
 
-            this.totalMoveX = this.totalMoveX + moveX
-            this.totalMoveY = this.totalMoveY + moveY
+            self.totalMoveX = self.totalMoveX + moveX
+            self.totalMoveY = self.totalMoveY + moveY
 
-            local currentX, currentY = this:GetCenter()
-            this:ClearAllPoints()
-            this:SetPoint("CENTER", UIParent, "BOTTOMLEFT", currentX + moveX, currentY + moveY)
+            local currentX, currentY = self:GetCenter()
+            self:ClearAllPoints()
+            self:SetPoint("CENTER", UIParent, "BOTTOMLEFT", currentX + moveX, currentY + moveY)
         end
     end)
 end
@@ -408,7 +408,7 @@ function DFRL.tools.CreateIndiDropDown(parent, text, items, width, height)
 
     local popup = CreateFrame("Frame", nil, UIParent)
     popup:SetWidth(btn:GetWidth())
-    popup:SetHeight(table.getn(items) * 22 + 10)
+    popup:SetHeight(#items * 22 + 10)
     popup:SetPoint("TOP", btn, "BOTTOM", 0, -2)
     popup:SetFrameLevel(btn:GetFrameLevel() + 1)
     popup:SetFrameStrata("DIALOG")
@@ -423,12 +423,12 @@ function DFRL.tools.CreateIndiDropDown(parent, text, items, width, height)
     btn.popup = popup
     btn.selectedValue = items[1]
 
-    for i = 1, table.getn(items) do
+    for i = 1, #items do
         local itemBtn = DFRL.tools.CreateButton(popup, items[i], popup:GetWidth() - 4, 20, true)
         itemBtn:SetPoint("TOP", popup, "TOP", 0, -(i - 1) * 22 - 5)
-        itemBtn:SetScript("OnClick", function()
-            btn.text:SetText(this.text:GetText())
-            btn.selectedValue = this.text:GetText()
+        itemBtn:SetScript("OnClick", function(self)
+            btn.text:SetText(self.text:GetText())
+            btn.selectedValue = self.text:GetText()
             popup:Hide()
         end)
     end
@@ -580,48 +580,7 @@ function DFRL.tools.CreateCheckbox(parent, name, moduleName, key, noCall)
     return checkbox
 end
 
-function DFRL.tools.CreateShaguCheckbox(parent, name, key)
-    debugprint("CreateShaguCheckbox - checkbox for "..key)
-    local checkbox = CreateFrame("CheckButton", name, parent, "UICheckButtonTemplate")
-    checkbox:SetWidth(20)
-    checkbox:SetHeight(20)
-
-    local label = checkbox:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    label:SetFont(DFRL:GetInfoOrCons("font") .. "BigNoodleTitling.ttf", 14, "OUTLINE")
-    label:SetPoint("LEFT", checkbox, "RIGHT", 5, 0)
-    label:SetText(key)
-    label:SetTextColor(.9,.9,.9)
-    checkbox.label = label
-
-    local initial = (ShaguTweaks_config and ShaguTweaks_config[key] == 1)
-    checkbox:SetChecked(initial)
-    debugprint("Initial state for "..key..": "..tostring(initial))
-
-    checkbox:SetScript("OnClick", function()
-        local checked = checkbox:GetChecked() and true or false
-        debugprint(key.." clicked, checked="..tostring(checked))
-
-        if checked then
-            ShaguTweaks_config[key] = 1
-            debugprint("ShaguTweaks_config["..key.."] = 1")
-            local mod = ShaguTweaks.mods[key]
-            if mod and mod.enable then
-                debugprint("Enabling module "..key)
-                mod:enable()
-            end
-        else
-            ShaguTweaks_config[key] = 0
-            debugprint("ShaguTweaks_config["..key.."] = 0")
-            local mod = ShaguTweaks.mods[key]
-            if mod and mod.disable then
-                debugprint("Disabling module "..key)
-                mod:disable()
-            end
-        end
-    end)
-
-    return checkbox
-end
+-- Legacy ShaguTweaks checkbox function removed for 3.3.5 compatibility
 
 function DFRL.tools.CreateSlider(parent, name, moduleName, key, minVal, maxVal, step, noCall)
     local slider = CreateFrame("Slider", name, parent)
@@ -660,14 +619,14 @@ function DFRL.tools.CreateSlider(parent, name, moduleName, key, minVal, maxVal, 
     slider:SetValue(currentValue)
     valueText:SetText(string.format("%.1f", currentValue))
 
-    slider:SetScript("OnValueChanged", function()
-        local newValue = this:GetValue()
+    slider:SetScript("OnValueChanged", function(self)
+        local newValue = self:GetValue()
         local roundedValue = math.floor(newValue * 10 + 0.5) / 10
-        this.valueText:SetText(string.format("%.1f", roundedValue))
+        self.valueText:SetText(string.format("%.1f", roundedValue))
         if noCall then
-            DFRL:SetTempDBNoCallback(this.moduleName, this.configKey, roundedValue)
+            DFRL:SetTempDBNoCallback(self.moduleName, self.configKey, roundedValue)
         else
-            DFRL:SetTempDB(this.moduleName, this.configKey, roundedValue)
+            DFRL:SetTempDB(self.moduleName, self.configKey, roundedValue)
         end
         debugprint("Slider value changed:".. roundedValue)
     end)
@@ -778,7 +737,7 @@ function DFRL.tools.CreateColour(parent, name, moduleName, key)
     local currentValue = DFRL:GetTempDB(moduleName, key)
     local initialIndex = 1
 
-    if type(currentValue) == "table" and table.getn(currentValue) >= 3 then
+    if type(currentValue) == "table" and #currentValue >= 3 then
         local r, g, b = currentValue[1], currentValue[2], currentValue[3]
 
         colorSwatch:SetVertexColor(r, g, b)
@@ -850,7 +809,7 @@ function DFRL.tools.CreateDropDown(parent, name, moduleName, key, items, noCall,
     if not btn.popup then
         local popup = CreateFrame("Frame", nil, UIParent)
         popup:SetWidth(btn:GetWidth() - 1)
-        popup:SetHeight((table.getn(items) - 1) * Y_SPACING + BUTTON_HEIGHT + 10)
+        popup:SetHeight((#items - 1) * Y_SPACING + BUTTON_HEIGHT + 10)
         popup:SetPoint("TOP", btn, "BOTTOM", 0, 3)
         popup:SetFrameLevel(btn:GetFrameLevel() + 1)
         popup:SetFrameStrata("DIALOG")
@@ -868,21 +827,21 @@ function DFRL.tools.CreateDropDown(parent, name, moduleName, key, items, noCall,
         popup.isHovered = false
 
         if items then
-            debugprint("Creating buttons for " .. table.getn(items) .. " items")
-            for i = 1, table.getn(items) do
+            debugprint("Creating buttons for " .. #items .. " items")
+            for i = 1, #items do
                 local itemBtn = DFRL.tools.CreateButton(popup, items[i], popup:GetWidth() - 5, BUTTON_HEIGHT, true)
                 itemBtn:SetFrameLevel(popup:GetFrameLevel() + 1)
                 itemBtn:SetPoint("TOP", popup, "TOP", 0, -(i - 1) * Y_SPACING - 5)
                 itemBtn.itemText = items[i]
                 debugprint("Button " .. i .. " created: " .. items[i])
 
-                itemBtn:SetScript("OnClick", function()
-                    debugprint(this.itemText)
-                    btn.text:SetText(this.itemText)
+                itemBtn:SetScript("OnClick", function(self)
+                    debugprint(self.itemText)
+                    btn.text:SetText(self.itemText)
                     if noCall then
-                        DFRL:SetTempDBNoCallback(moduleName, key, this.itemText)
+                        DFRL:SetTempDBNoCallback(moduleName, key, self.itemText)
                     else
-                        DFRL:SetTempDB(moduleName, key, this.itemText)
+                        DFRL:SetTempDB(moduleName, key, self.itemText)
                     end
                     popup:Hide()
                 end)
@@ -922,13 +881,13 @@ function DFRL.tools.CreateDropDown(parent, name, moduleName, key, items, noCall,
         btn.popup.isHovered = false
         local f = CreateFrame("Frame")
         f.elapsed = 0
-        f:SetScript("OnUpdate", function()
-            this.elapsed = this.elapsed + arg1
-            if this.elapsed > 0.1 then
+        f:SetScript("OnUpdate", function(self, elapsed)
+            self.elapsed = self.elapsed + elapsed
+            if self.elapsed > 0.1 then
                 if not btn.popup.isHovered then
                     btn.popup:Hide()
                 end
-                this:SetScript("OnUpdate", nil)
+                self:SetScript("OnUpdate", nil)
             end
         end)
     end)
@@ -1006,29 +965,29 @@ function DFRL.tools.CreateFontWarner(parent, size, text, colour, pulse, time)
         frame.direction = -1
         frame.alpha = 1
 
-        frame:SetScript("OnUpdate", function()
+        frame:SetScript("OnUpdate", function(self, elapsed)
             if not fontString:IsVisible() then
-                this:SetScript("OnUpdate", nil)
+                self:SetScript("OnUpdate", nil)
                 DFRL.activeScripts["GUI WarnerPulse"] = false
                 return
             end
 
-            this.elapsed = this.elapsed + arg1
-            this.alpha = this.alpha + this.direction * arg1 * 2
+            self.elapsed = self.elapsed + elapsed
+            self.alpha = self.alpha + self.direction * elapsed * 2
 
-            if this.alpha <= 0.3 then
-                this.alpha = 0.3
-                this.direction = 1
-            elseif this.alpha >= 1 then
-                this.alpha = 1
-                this.direction = -1
+            if self.alpha <= 0.3 then
+                self.alpha = 0.3
+                self.direction = 1
+            elseif self.alpha >= 1 then
+                self.alpha = 1
+                self.direction = -1
             end
 
-            fontString:SetAlpha(this.alpha)
+            fontString:SetAlpha(self.alpha)
 
-            if this.totalTime > 0 and this.elapsed >= this.totalTime then
+            if self.totalTime > 0 and self.elapsed >= self.totalTime then
                 fontString:Hide()
-                this:SetScript("OnUpdate", nil)
+                self:SetScript("OnUpdate", nil)
                 DFRL.activeScripts["GUI WarnerPulse"] = false
             end
         end)

@@ -79,18 +79,17 @@ DFRL:NewMod("Gui-base", 2, function()
             [2] = "Info",
             [3] = "Profiles",
             [4] = "Modules",
-            [5] = "ShaguTweaks",
 
-            [6] = "Actionbars",
-            [7] = "Bags",
-            [8] = "Castbar",
-            [9] = "Chat",
-            [10] = "Interface",
-            [11] = "Micromenu",
-            [12] = "Minimap",
-            [13] = "Third Party",
-            [14] = "Unitframes",
-            [15] = "Xprep",
+            [5] = "Actionbars",
+            [6] = "Bags",
+            [7] = "Castbar",
+            [8] = "Chat",
+            [9] = "Interface",
+            [10] = "Micromenu",
+            [11] = "Minimap",
+            [12] = "Third Party",
+            [13] = "Unitframes",
+            [14] = "Xprep",
         }
     }
 
@@ -184,9 +183,9 @@ DFRL:NewMod("Gui-base", 2, function()
             self.reloadedText:SetText("Reloaded")
 
             local fadeOut = true
-            local updateScript = function()
-                if (this.tick or 0) > GetTime() then return end
-                this.tick = GetTime() + self.CONSTANTS.PULSE_UPDATE_INTERVAL
+            local updateScript = function(self, elapsed)
+                if (self.tick or 0) > GetTime() then return end
+                self.tick = GetTime() + Setup.CONSTANTS.PULSE_UPDATE_INTERVAL
                 DFRL.activeScripts["GUI LogoPulse"] = true
 
                 local currentAlpha = self.reloadedText:GetAlpha()
@@ -239,9 +238,9 @@ DFRL:NewMod("Gui-base", 2, function()
             self.fpsText:SetTextColor(1, .82, 0, 1)
             self.fpsText:SetPoint("RIGHT", self.subFrame, "RIGHT", -10, 0)
 
-            self.subFrame:SetScript("OnUpdate", function()
-                if (this.fpsTimer or 0) > GetTime() then return end
-                this.fpsTimer = GetTime() + 0.5
+            self.subFrame:SetScript("OnUpdate", function(self, elapsed)
+                if (self.fpsTimer or 0) > GetTime() then return end
+                self.fpsTimer = GetTime() + 0.5
                 DFRL.activeScripts["GUI SubFrame"] = true
                 self.fpsText:SetText("FPS: |cffffffff" .. format("%.1f", GetFramerate()) .. "|r")
                 self.profileText:SetText("Profile:   |cffffffff" .. (DFRL_CUR_PROFILE[UnitName("player")] or "Default") .. "|r")
@@ -259,8 +258,8 @@ DFRL:NewMod("Gui-base", 2, function()
 
     function Setup:TabButtons()
         if not self.tabsCreated then
-            debugprint("TabButtons - Creating " .. table.getn(Setup.tabs) .. " navigation tabs")
-            for i = 1, table.getn(Setup.tabs) do
+            debugprint("TabButtons - Creating " .. #Setup.tabs .. " navigation tabs")
+            for i = 1, #Setup.tabs do
                 debugprint("TabButtons - Creating tab " .. i .. ": " .. Setup.tabs[i])
                 local tab = CreateFrame("Button", "DFRLTab" .. i, self.tabFrame)
                 tab:SetHeight(self.CONSTANTS.TAB_BUTTON_HEIGHT)
@@ -316,7 +315,7 @@ DFRL:NewMod("Gui-base", 2, function()
         debugprint("SelectTab - Switching to tab " .. tabIndex .. ": " .. self.tabs[tabIndex])
 
         debugprint("SelectTab - Hiding all tab highlights")
-        for i = 1, table.getn(self.tabs) do
+        for i = 1, #self.tabs do
             self.tabButtons[i].highlight:Hide()
         end
 
@@ -335,7 +334,7 @@ DFRL:NewMod("Gui-base", 2, function()
         end
 
         debugprint("SelectTab - Hiding all scroll children")
-        for i = 1, table.getn(self.tabs) do
+        for i = 1, #self.tabs do
             if self.scrollChildren[i] then
                 self.scrollChildren[i]:Hide()
             end
@@ -448,9 +447,9 @@ DFRL:NewMod("Gui-base", 2, function()
                 self.slider:SetValue(this:GetVerticalScroll())
             end)
 
-            debugprint("Panels - Creating " .. table.getn(self.tabs) .. " scroll children")
+            debugprint("Panels - Creating " .. #self.tabs .. " scroll children")
             debugprint("Panels - ScrollFrame parent: " .. tostring(self.scrollFrame:GetParent():GetName()))
-            for i = 1, table.getn(self.tabs) do
+            for i = 1, #self.tabs do
                 debugprint("Panels - Creating scrollchild " .. i .. " for tab: " .. self.tabs[i])
                 local scrollChild = CreateFrame("Frame", "DFRLScrollChild" .. i, self.scrollFrame)
                 scrollChild:SetWidth(800)
@@ -495,37 +494,7 @@ DFRL:NewMod("Gui-base", 2, function()
         end
     end
 
-    function Setup:UpdateShaguTweaksButton()
-        for i = 1, table.getn(Setup.tabs) do
-            if Setup.tabs[i] == "ShaguTweaks" and self.tabButtons[i] then
-                local tab = self.tabButtons[i]
-                local text = tab:GetFontString()
-                if DFRL.addon1 then
-                    debugprint("UpdateShaguTweaksButton - ShaguTweaks enabled - addon found")
-                    text:SetTextColor(.7, .7, .7, 1)
-                    tab:Enable()
-                    tab:SetScript("OnClick", function()
-                        self:SelectTab(i)
-                    end)
-                    tab:SetScript("OnEnter", function()
-                        if i ~= self.selectedTab then
-                            tab.highlight:Show()
-                        end
-                    end)
-                    tab:SetScript("OnLeave", function()
-                        if i ~= self.selectedTab then
-                            tab.highlight:Hide()
-                        end
-                    end)
-                else
-                    debugprint("UpdateShaguTweaksButton - ShaguTweaks still disabled - addon not found")
-                    text:SetTextColor(.2, .2, .2, 1)
-                    tab:Disable()
-                end
-                break
-            end
-        end
-    end
+    -- Legacy ShaguTweaks function removed for 3.3.5 compatibility
 
     --=================
     -- INIT
@@ -582,10 +551,12 @@ DFRL:NewMod("Gui-base", 2, function()
         Setup:InitScrollHandler()
 
         self.eventFrame = CreateFrame("Frame")
-        self.eventFrame:RegisterEvent("VARIABLES_LOADED")
-        self.eventFrame:SetScript("OnEvent", function()
-            Setup:UpdateShaguTweaksButton()
-            self.eventFrame:UnregisterEvent("VARIABLES_LOADED")
+        self.eventFrame:RegisterEvent("PLAYER_LOGIN")
+        self.eventFrame:SetScript("OnEvent", function(frame, event)
+            if event == "PLAYER_LOGIN" then
+                -- Legacy ShaguTweaks button update removed
+                self.eventFrame:UnregisterEvent("PLAYER_LOGIN")
+            end
         end)
 
         Setup:SelectTab(1)
