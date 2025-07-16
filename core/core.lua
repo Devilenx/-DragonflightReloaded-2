@@ -441,6 +441,12 @@ DFRL:SetScript("OnEvent", function(self, event, ...)
         debugprint("EVENT: PLAYER_LOGIN")
         DFRL:RunMods()
 
+        -- Register basic slash command early
+        SLASH_DFRL1 = "/dfrl"
+        SlashCmdList["DFRL"] = function()
+            print("Dragonflight Reloaded slash command working! GUI loading...")
+        end
+
         print("Welcome to |cffffd200Dragonflight:|r Reloaded.")
         print("Open menu via |cffddddddESC|r or |cffddddddSLASH DFRL|r.")
     end

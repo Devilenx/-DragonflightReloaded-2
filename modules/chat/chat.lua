@@ -22,6 +22,47 @@ DFRL:NewMod("Chat", 1, function()
 
     function Setup:ChatFrame()
         ChatFrame1Tab:SetClampedToScreen(true)
+        
+        -- Apply Dragonflight-style chat frame skins
+        for i = 1, NUM_CHAT_WINDOWS do
+            local chatFrame = _G["ChatFrame"..i]
+            if chatFrame then
+                -- Apply backdrop to chat frame
+                chatFrame:SetBackdrop({
+                    bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+                    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+                    tile = true, tileSize = 16, edgeSize = 16,
+                    insets = { left = 3, right = 3, top = 5, bottom = 3 }
+                })
+                chatFrame:SetBackdropColor(0, 0, 0, 0.75)
+                chatFrame:SetBackdropBorderColor(0.4, 0.4, 0.4, 1)
+                
+                -- Style the tab
+                local tab = _G["ChatFrame"..i.."Tab"]
+                if tab then
+                    local tabText = _G["ChatFrame"..i.."TabText"]
+                    if tabText then
+                        tabText:SetFont(DFRL:GetInfoOrCons("font") .. "BigNoodleTitling.ttf", 12, "OUTLINE")
+                        tabText:SetShadowOffset(1, -1)
+                        tabText:SetShadowColor(0, 0, 0, 1)
+                    end
+                end
+            end
+        end
+        
+        -- Style chat edit box
+        if ChatFrameEditBox then
+            ChatFrameEditBox:SetBackdrop({
+                bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+                edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+                tile = true, tileSize = 16, edgeSize = 16,
+                insets = { left = 3, right = 3, top = 5, bottom = 3 }
+            })
+            ChatFrameEditBox:SetBackdropColor(0, 0, 0, 0.75)
+            ChatFrameEditBox:SetBackdropBorderColor(0.4, 0.4, 0.4, 1)
+        end
+        
+        debugprint("Chat frame skins applied")
     end
 
     --=================
