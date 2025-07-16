@@ -249,7 +249,7 @@ DFRL:NewMod("Frames", 2, function()
         end
 
         -- make frames from list movable
-        for i = 1, table.getn(framesToMakeMovable) do
+        for i = 1, #framesToMakeMovable do
             if framesToMakeMovable[i] then
                 MakeFrameMovable(framesToMakeMovable[i])
             end

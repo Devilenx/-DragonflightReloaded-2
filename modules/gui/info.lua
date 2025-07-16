@@ -144,7 +144,7 @@ DFRL:NewMod("Gui-info", 5, function()
         line = line + 2
 
         local idx = 4
-        for i = 1, table.getn(gui) do
+        for i = 1, #gui do
             local entry = gui[i]
             if not self.perfTexts[idx] then
                 self.perfTexts[idx] = DFRL.tools.CreateFont(self.perfFrame, self.TEXT_SIZE, "", nil, "LEFT")
@@ -163,7 +163,7 @@ DFRL:NewMod("Gui-info", 5, function()
 
         line = line + 1
 
-        for i = 1, table.getn(other) do
+        for i = 1, #other do
             local entry = other[i]
             if not self.perfTexts[idx] then
                 self.perfTexts[idx] = DFRL.tools.CreateFont(self.perfFrame, self.TEXT_SIZE, "", nil, "LEFT")
@@ -232,7 +232,7 @@ DFRL:NewMod("Gui-info", 5, function()
 
         local index = 1
 
-        for i = 1, table.getn(gui) do
+        for i = 1, #gui do
             local scriptName = gui[i]
             local scriptText = self.scriptTexts[index]
             if not scriptText then
@@ -262,7 +262,7 @@ DFRL:NewMod("Gui-info", 5, function()
 
         line = line + 1
 
-        for i = 1, table.getn(other) do
+        for i = 1, #other do
             local scriptName = other[i]
             local scriptText = self.scriptTexts[index]
             if not scriptText then
@@ -290,7 +290,7 @@ DFRL:NewMod("Gui-info", 5, function()
             line = line + 1
         end
 
-        for i = index, table.getn(self.scriptTexts) do
+        for i = index, #self.scriptTexts do
             if self.scriptTexts[i] then
                 self.scriptTexts[i]:Hide()
             end

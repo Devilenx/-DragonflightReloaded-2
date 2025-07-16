@@ -409,7 +409,7 @@ DFRL:NewMod("Micro", 1, function()
                 button:SetPoint("TOPLEFT", DFRL.microMenuContainer, "TOPLEFT", xOffset, 0)
             end
 
-            DFRL.microMenuContainer:SetWidth((Setup.buttonWidth + value) * table.getn(Setup.buttons))
+            DFRL.microMenuContainer:SetWidth((Setup.buttonWidth + value) * #Setup.buttons)
         end
     end
 

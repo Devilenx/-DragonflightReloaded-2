@@ -259,8 +259,8 @@ DFRL:NewMod("Gui-base", 2, function()
 
     function Setup:TabButtons()
         if not self.tabsCreated then
-            debugprint("TabButtons - Creating " .. table.getn(Setup.tabs) .. " navigation tabs")
-            for i = 1, table.getn(Setup.tabs) do
+            debugprint("TabButtons - Creating " .. #Setup.tabs .. " navigation tabs")
+            for i = 1, #Setup.tabs do
                 debugprint("TabButtons - Creating tab " .. i .. ": " .. Setup.tabs[i])
                 local tab = CreateFrame("Button", "DFRLTab" .. i, self.tabFrame)
                 tab:SetHeight(self.CONSTANTS.TAB_BUTTON_HEIGHT)
@@ -316,7 +316,7 @@ DFRL:NewMod("Gui-base", 2, function()
         debugprint("SelectTab - Switching to tab " .. tabIndex .. ": " .. self.tabs[tabIndex])
 
         debugprint("SelectTab - Hiding all tab highlights")
-        for i = 1, table.getn(self.tabs) do
+        for i = 1, #self.tabs do
             self.tabButtons[i].highlight:Hide()
         end
 
@@ -335,7 +335,7 @@ DFRL:NewMod("Gui-base", 2, function()
         end
 
         debugprint("SelectTab - Hiding all scroll children")
-        for i = 1, table.getn(self.tabs) do
+        for i = 1, #self.tabs do
             if self.scrollChildren[i] then
                 self.scrollChildren[i]:Hide()
             end
@@ -448,9 +448,9 @@ DFRL:NewMod("Gui-base", 2, function()
                 self.slider:SetValue(this:GetVerticalScroll())
             end)
 
-            debugprint("Panels - Creating " .. table.getn(self.tabs) .. " scroll children")
+            debugprint("Panels - Creating " .. #self.tabs .. " scroll children")
             debugprint("Panels - ScrollFrame parent: " .. tostring(self.scrollFrame:GetParent():GetName()))
-            for i = 1, table.getn(self.tabs) do
+            for i = 1, #self.tabs do
                 debugprint("Panels - Creating scrollchild " .. i .. " for tab: " .. self.tabs[i])
                 local scrollChild = CreateFrame("Frame", "DFRLScrollChild" .. i, self.scrollFrame)
                 scrollChild:SetWidth(800)
@@ -496,7 +496,7 @@ DFRL:NewMod("Gui-base", 2, function()
     end
 
     function Setup:UpdateShaguTweaksButton()
-        for i = 1, table.getn(Setup.tabs) do
+        for i = 1, #Setup.tabs do
             if Setup.tabs[i] == "ShaguTweaks" and self.tabButtons[i] then
                 local tab = self.tabButtons[i]
                 local text = tab:GetFontString()
@@ -582,10 +582,12 @@ DFRL:NewMod("Gui-base", 2, function()
         Setup:InitScrollHandler()
 
         self.eventFrame = CreateFrame("Frame")
-        self.eventFrame:RegisterEvent("VARIABLES_LOADED")
-        self.eventFrame:SetScript("OnEvent", function()
-            Setup:UpdateShaguTweaksButton()
-            self.eventFrame:UnregisterEvent("VARIABLES_LOADED")
+        self.eventFrame:RegisterEvent("PLAYER_LOGIN")
+        self.eventFrame:SetScript("OnEvent", function(frame, event)
+            if event == "PLAYER_LOGIN" then
+                Setup:UpdateShaguTweaksButton()
+                self.eventFrame:UnregisterEvent("PLAYER_LOGIN")
+            end
         end)
 
         Setup:SelectTab(1)

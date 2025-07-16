@@ -99,7 +99,7 @@ DFRL:NewMod("Cut-Out", 1, function()
     function Setup:ProcessFadeAnimations()
         local currentTime = GetTime()
         local i = 1
-        while i <= table.getn(self.fadingFrames) do
+        while i <= #self.fadingFrames do
             local frame = self.fadingFrames[i]
             local elapsed = currentTime - frame.fadeStart
 
@@ -123,7 +123,7 @@ DFRL:NewMod("Cut-Out", 1, function()
     end
 
     function Setup:InitializeCutouts()
-        for i = 1, table.getn(self.unitFrames) do
+        for i = 1, #self.unitFrames do
             local frameData = self.unitFrames[i]
             self:HookUnitFrame(frameData[1], frameData[2], frameData[3])
         end

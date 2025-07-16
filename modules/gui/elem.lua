@@ -92,7 +92,7 @@ DFRL:NewMod("Gui-elem", 3, function()
 
         for moduleName, defaults in pairs(DFRL.defaults) do
             for elementName, valueTable in pairs(defaults) do
-                if elementName ~= "enabled" and table.getn(valueTable) > 1 then
+                if elementName ~= "enabled" and #valueTable > 1 then
 
                     local typeMeta = valueTable[3]
                     if valueTable[2] == "slider" and type(typeMeta) == "table" then
@@ -160,7 +160,7 @@ DFRL:NewMod("Gui-elem", 3, function()
                 end
 
                 for elementName, valueTable in pairs(defaults) do
-                    if elementName ~= "enabled" and table.getn(valueTable) > 1 then
+                    if elementName ~= "enabled" and #valueTable > 1 then
                         local metaKey = moduleName .. "." .. elementName
                         local data = self.metadata[metaKey]
 
@@ -597,7 +597,7 @@ DFRL:NewMod("Gui-elem", 3, function()
                 end
             end
 
-            if moduleInfo ~= sortedModules[table.getn(sortedModules)] then
+            if moduleInfo ~= sortedModules[#sortedModules] then
                 self.tabPositions[tabIndex] = self.tabPositions[tabIndex] - self.MODULE_SPACING
             end
         end
@@ -612,7 +612,7 @@ DFRL:NewMod("Gui-elem", 3, function()
             for moduleName, defaults in pairs(DFRL.defaults) do
                 if self.moduleMapping[moduleName] then
                     for elementName, valueTable in pairs(defaults) do
-                        if elementName ~= "enabled" and table.getn(valueTable) > 1 then
+                        if elementName ~= "enabled" and #valueTable > 1 then
                             local metaKey = moduleName .. "." .. elementName
                             local data = self.metadata[metaKey]
 
@@ -798,7 +798,7 @@ DFRL:NewMod("Gui-elem", 3, function()
                 elseif data.type == "dropdown" then
                     element.text:SetText(value)
                 elseif data.type == "colour" then
-                    if type(value) == "table" and table.getn(value) >= 3 then
+                    if type(value) == "table" and #value >= 3 then
                         for i = 1, 30 do
                             local color = element.BASIC_COLORS and element.BASIC_COLORS[i]
                             if color and color[1] == value[1] and color[2] == value[2] and color[3] == value[3] then

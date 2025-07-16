@@ -103,7 +103,7 @@ DFRL:NewMod("Ui", 5, function()
 
             local regions = { frame:GetRegions() }
             local texIndex = 1
-            for i = 1, table.getn(regions) do
+            for i = 1, #regions do
                 local r = regions[i]
                 if r and r:IsObjectType("Texture") then
                     local name = r:GetName()
@@ -120,7 +120,7 @@ DFRL:NewMod("Ui", 5, function()
                         end
                         r:SetTexture(tex[texIndex])
                         texIndex = texIndex + 1
-                        if texIndex > table.getn(tex) then break end
+                        if texIndex > #tex then break end
                     end
                 end
             end
@@ -139,7 +139,7 @@ DFRL:NewMod("Ui", 5, function()
 
         }
 
-        for i = 1, table.getn(subFrames) do
+        for i = 1, #subFrames do
             local f = getglobal(subFrames[i])
             if f then
                 HookScript(f, "OnShow", function()
@@ -379,7 +379,7 @@ DFRL:NewMod("Ui", 5, function()
             end
 
             local regions = {frame:GetRegions()}
-            for i = 1, table.getn(regions) do
+            for i = 1, #regions do
                 local region = regions[i]
                 if region:GetObjectType() == "Texture" then
                     local parent = region:GetParent()
@@ -390,7 +390,7 @@ DFRL:NewMod("Ui", 5, function()
             end
 
             local children = {frame:GetChildren()}
-            for i = 1, table.getn(children) do
+            for i = 1, #children do
                 local child = children[i]
                 DarkenFrame(child)
             end
@@ -513,12 +513,12 @@ DFRL:NewMod("Ui", 5, function()
             DFRL.lowHpWarnFrame = frame
 
             local healthCheckFrame = CreateFrame("Frame")
-            local updateFunc = function()
-                if (this.tick or 0) > GetTime() then 
+            local updateFunc = function(frame)
+                if (frame.tick or 0) > GetTime() then 
                     DFRL.activeScripts["LowHpWarnScript"] = false
                     return 
                 end
-                this.tick = GetTime() + 0.01
+                frame.tick = GetTime() + 0.01
 
                 local healthPercent = UnitHealth("player") / UnitHealthMax("player") * 100
 

@@ -42,7 +42,7 @@ DFRL:NewMod("Gui-mods", 3, function()
             local row, line, count = 1, 6, 0
             local maxPerRow = 4
 
-            for i = 1, table.getn(modules) do
+            for i = 1, #modules do
                 if count >= maxPerRow then
                     row = row + 1
                     line = 6

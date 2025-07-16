@@ -60,7 +60,7 @@ DFRL:NewMod("Collector", 1, function()
         }
 
         local name = frame:GetName()
-        for i = 1, table.getn(ignored) do
+        for i = 1, #ignored do
             if string.find(string.lower(name), string.lower(ignored[i])) then
                 debugprint("Button ignored by pattern: " .. name)
                 return false
@@ -81,7 +81,7 @@ DFRL:NewMod("Collector", 1, function()
             end
 
             local children = {frame:GetChildren()}
-            for j = 1, table.getn(children) do
+            for j = 1, #children do
                 if children[j] and children[j]:IsObjectType("Button") then
                     debugprint("Valid frame with button child found: " .. name)
                     return true
@@ -97,7 +97,7 @@ DFRL:NewMod("Collector", 1, function()
         debugprint("Starting minimap button collection...")
         local buttons = {}
         local children = { Minimap:GetChildren() }
-        local numChildren = table.getn(children)
+        local numChildren = #children
 
         debugprint("Found " .. numChildren .. " children on Minimap")
 
@@ -114,7 +114,7 @@ DFRL:NewMod("Collector", 1, function()
     end
 
     function Setup:ArrangeButtons(buttons)
-        debugprint("Arranging " .. table.getn(buttons) .. " buttons...")
+        debugprint("Arranging " .. #buttons .. " buttons...")
         buttons = self:LoadSavedOrder(buttons)
         self.buttonOrder = buttons
 
@@ -123,7 +123,7 @@ DFRL:NewMod("Collector", 1, function()
         local buttonsPerRow = DFRL.MinimapButtonsPerRow
         local count = 0
 
-        for i = 1, table.getn(buttons) do
+        for i = 1, #buttons do
             local button = buttons[i]
             button:SetParent(self.collector)
             button:ClearAllPoints()
@@ -218,7 +218,7 @@ DFRL:NewMod("Collector", 1, function()
                 debugprint("Timer expired, collecting buttons now...")
                 self:CleanupFrames()
                 local buttons = self:FindButtons()
-                if table.getn(buttons) == 0 then
+                if #buttons == 0 then
                     debugprint("No buttons found, hiding collector and toggle")
                     self.collector:Hide()
                     DFRL.toggleButton:Hide()
@@ -239,11 +239,11 @@ DFRL:NewMod("Collector", 1, function()
             debugprint("No saved order found, using default")
             return buttons
         end
-        debugprint("Found saved order with " .. table.getn(saved) .. " entries")
+        debugprint("Found saved order with " .. #saved .. " entries")
 
         local ordered = {}
-        for i = 1, table.getn(saved) do
-            for j = 1, table.getn(buttons) do
+        for i = 1, #saved do
+            for j = 1, #buttons do
                 if buttons[j]:GetName() == saved[i] then
                     table.insert(ordered, buttons[j])
                     debugprint("Matched saved button: " .. saved[i])
@@ -252,9 +252,9 @@ DFRL:NewMod("Collector", 1, function()
             end
         end
 
-        for i = 1, table.getn(buttons) do
+        for i = 1, #buttons do
             local found = false
-            for j = 1, table.getn(ordered) do
+            for j = 1, #ordered do
                 if buttons[i] == ordered[j] then
                     found = true
                     break
@@ -266,18 +266,18 @@ DFRL:NewMod("Collector", 1, function()
             end
         end
 
-        debugprint("Loaded order complete with " .. table.getn(ordered) .. " buttons")
+        debugprint("Loaded order complete with " .. #ordered .. " buttons")
         return ordered
     end
 
     function Setup:SaveButtonOrder(buttons)
         debugprint("Saving button order...")
         local order = {}
-        for i = 1, table.getn(buttons) do
+        for i = 1, #buttons do
             table.insert(order, buttons[i]:GetName())
         end
         DFRL:SetTempDBNoCallback("Collector", "buttonOrder", order)
-        debugprint("Saved order with " .. table.getn(order) .. " buttons")
+        debugprint("Saved order with " .. #order .. " buttons")
     end
 
     function Setup:RepositionAllButtons()
@@ -286,7 +286,7 @@ DFRL:NewMod("Collector", 1, function()
         local padding = 4
         local buttonsPerRow = DFRL.MinimapButtonsPerRow
 
-        for i = 1, table.getn(self.buttonOrder) do
+        for i = 1, #self.buttonOrder do
             local button = self.buttonOrder[i]
             button:ClearAllPoints()
 
@@ -320,8 +320,8 @@ DFRL:NewMod("Collector", 1, function()
         if col < 0 then col = 0 end
 
         local pos = (row * buttonsPerRow) + col + 1
-        if pos > table.getn(self.buttonOrder) then
-            pos = table.getn(self.buttonOrder)
+        if pos > #self.buttonOrder then
+            pos = #self.buttonOrder
         end
 
         debugprint("Drop position: " .. pos .. " (row:" .. row .. ", col:" .. col .. ")")
@@ -369,7 +369,7 @@ DFRL:NewMod("Collector", 1, function()
         local dragTarget = button
         if button:IsObjectType("Frame") then
             local children = {button:GetChildren()}
-            for i = 1, table.getn(children) do
+            for i = 1, #children do
                 if children[i]:IsObjectType("Button") then
                     dragTarget = children[i]
                     debugprint("Found button child: " .. (dragTarget:GetName() or "unnamed"))
@@ -397,7 +397,7 @@ DFRL:NewMod("Collector", 1, function()
             if self:SnapBack(button) then
                 debugprint("SNAP BACK: Button outside bounds")
                 local currentIndex = nil
-                for i = 1, table.getn(self.buttonOrder) do
+                for i = 1, #self.buttonOrder do
                     if self.buttonOrder[i] == button then
                         currentIndex = i
                         break

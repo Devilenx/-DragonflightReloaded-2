@@ -24,9 +24,10 @@ DFRL:NewMod("Gui-shag", 3, function()
     }
 
     local f = CreateFrame("Frame")
-    f:RegisterEvent("VARIABLES_LOADED")
-    f:SetScript("OnEvent", function()
-        debugprint("VARIABLES LOADED FROM ELEM.LUA")
+    f:RegisterEvent("PLAYER_LOGIN")
+    f:SetScript("OnEvent", function(frame, event)
+        if event == "PLAYER_LOGIN" then
+            debugprint("PLAYER LOGIN FROM ELEM.LUA")
         if DFRL.gui.shaguCore == true or DFRL.gui.shaguExtras == true then
             debugprint("SHAGU FLAGS RECEIVED")
             Setup:MetaData()
@@ -111,7 +112,7 @@ DFRL:NewMod("Gui-shag", 3, function()
         debugprint("Elements - Grouping complete, showing final groups:")
         for module, categories in pairs(groups) do
             for category, elements in pairs(categories) do
-                debugprint("Elements - Group " .. module .. "." .. category .. " has " .. table.getn(elements) .. " elements")
+                debugprint("Elements - Group " .. module .. "." .. category .. " has " .. #elements .. " elements")
             end
         end
 
@@ -138,7 +139,7 @@ DFRL:NewMod("Gui-shag", 3, function()
 
                 for _, category in pairs(categoryNames) do
                     local elements = groups[module][category]
-                debugprint("Elements - Creating category: " .. category .. " with " .. table.getn(elements) .. " elements")
+                debugprint("Elements - Creating category: " .. category .. " with " .. #elements .. " elements")
 
                 debugprint("Elements - Sorting elements in " .. category .. " before sort:")
                 for _, element in pairs(elements) do

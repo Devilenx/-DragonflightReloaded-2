@@ -131,11 +131,11 @@ DFRL:NewMod("Map", 1, function()
             self.timeText:SetTextColor(1, 1, 1, 1)
 
             self.updateTimer = CreateFrame("Frame")
-            self.updateTimer:SetScript("OnUpdate", function()
-                if (this.tick or 0) > GetTime() then
+            self.updateTimer:SetScript("OnUpdate", function(frame)
+                if (frame.tick or 0) > GetTime() then
                     return
                 end
-                this.tick = GetTime() + 5
+                frame.tick = GetTime() + 5
 
                 local localTime = date("%H:%M")
                 self.timeText:SetText(localTime)
