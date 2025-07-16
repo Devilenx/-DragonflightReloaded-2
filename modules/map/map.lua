@@ -142,8 +142,8 @@ DFRL:NewMod("Map", 1, function()
                 DFRL.activeScripts["MapTimeScript"] = true
             end)
 
-            self.timeFrame:SetScript("OnEnter", function()
-                GameTooltip:SetOwner(this, "ANCHOR_BOTTOMLEFT")
+            self.timeFrame:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
                 local hour, minute = GetGameTime()
                 local serverTime = format("%d:%02d", hour, minute)
                 GameTooltip:AddLine("Time")

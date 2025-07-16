@@ -183,9 +183,9 @@ DFRL:NewMod("Gui-base", 2, function()
             self.reloadedText:SetText("Reloaded")
 
             local fadeOut = true
-            local updateScript = function()
-                if (this.tick or 0) > GetTime() then return end
-                this.tick = GetTime() + self.CONSTANTS.PULSE_UPDATE_INTERVAL
+            local updateScript = function(self, elapsed)
+                if (self.tick or 0) > GetTime() then return end
+                self.tick = GetTime() + Setup.CONSTANTS.PULSE_UPDATE_INTERVAL
                 DFRL.activeScripts["GUI LogoPulse"] = true
 
                 local currentAlpha = self.reloadedText:GetAlpha()
@@ -238,9 +238,9 @@ DFRL:NewMod("Gui-base", 2, function()
             self.fpsText:SetTextColor(1, .82, 0, 1)
             self.fpsText:SetPoint("RIGHT", self.subFrame, "RIGHT", -10, 0)
 
-            self.subFrame:SetScript("OnUpdate", function()
-                if (this.fpsTimer or 0) > GetTime() then return end
-                this.fpsTimer = GetTime() + 0.5
+            self.subFrame:SetScript("OnUpdate", function(self, elapsed)
+                if (self.fpsTimer or 0) > GetTime() then return end
+                self.fpsTimer = GetTime() + 0.5
                 DFRL.activeScripts["GUI SubFrame"] = true
                 self.fpsText:SetText("FPS: |cffffffff" .. format("%.1f", GetFramerate()) .. "|r")
                 self.profileText:SetText("Profile:   |cffffffff" .. (DFRL_CUR_PROFILE[UnitName("player")] or "Default") .. "|r")

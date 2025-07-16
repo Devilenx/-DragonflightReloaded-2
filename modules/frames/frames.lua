@@ -185,9 +185,9 @@ DFRL:NewMod("Frames", 2, function()
 
             -- overlay visibility
             local controlFrame = CreateFrame("Frame")
-            controlFrame:SetScript("OnUpdate", function()
-                if (this.tick or 0) > GetTime() then return end
-                this.tick = GetTime() + 0.1
+            controlFrame:SetScript("OnUpdate", function(self, elapsed)
+                if (self.tick or 0) > GetTime() then return end
+                self.tick = GetTime() + 0.1
 
                 if IsControlKeyDown() and IsShiftKeyDown() and IsAltKeyDown() then
                     flag = true

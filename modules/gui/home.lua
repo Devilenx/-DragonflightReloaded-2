@@ -56,9 +56,9 @@ DFRL:NewMod("Gui-home", 3, function()
         local wasVisible = Base.mainFrame:IsShown() and Base.selectedTab == 1
         DFRL.activeScripts["GUI HomeAnimation"] = wasVisible
 
-        local updateScript = function()
-            if (this.tick or 0) > GetTime() then return end
-            this.tick = GetTime() + Setup.PULSE_UPDATE_INTERVAL
+        local updateScript = function(self, elapsed)
+            if (self.tick or 0) > GetTime() then return end
+            self.tick = GetTime() + Setup.PULSE_UPDATE_INTERVAL
 
             local isVisible = Base.mainFrame:IsShown() and Base.selectedTab == 1
 
@@ -170,9 +170,9 @@ DFRL:NewMod("Gui-home", 3, function()
         local wasVisible = Base.mainFrame:IsShown() and Base.selectedTab == 1
         DFRL.activeScripts["GUI LinesAnimation"] = wasVisible
 
-        local script = function()
-            if (this.tick or 0) > GetTime() then return end
-            this.tick = GetTime() + Setup.PULSE_UPDATE_INTERVAL
+        local script = function(self, elapsed)
+            if (self.tick or 0) > GetTime() then return end
+            self.tick = GetTime() + Setup.PULSE_UPDATE_INTERVAL
 
             local isVisible = Base.mainFrame:IsShown() and Base.selectedTab == 1
 
